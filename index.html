@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SlayMC - Edycja 1</title>
+
+<style>
+:root{
+  --bg:#05070a;
+  --primary:#00ffff;
+  --card:rgba(255,255,255,0.03);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  scroll-behavior:smooth;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:white;
+  overflow-x:hidden;
+  transition:0.4s;
+}
+
+header{
+  padding:80px 20px;
+  text-align:center;
+  background:linear-gradient(90deg,var(--primary),#000000);
+  color:black;
+  font-weight:bold;
+}
+
+/* 🔥 JĘZYK */
+.lang{
+  position:absolute;
+  top:15px;
+  right:20px;
+  font-size:22px;
+}
+
+.lang span{
+  cursor:pointer;
+  margin-left:10px;
+}
+
+/* reszta */
+nav{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  background:#0a0f14;
+  padding:15px;
+  position:sticky;
+  top:0;
+  border-bottom:1px solid #00ffff33;
+  flex-wrap:wrap;
+}
+
+nav a{
+  color:var(--primary);
+  text-decoration:none;
+  padding:10px 14px;
+  border:1px solid #00ffff55;
+  border-radius:10px;
+}
+
+section{
+  max-width:1100px;
+  margin:auto;
+  padding:80px 20px;
+  display:flex;
+  align-items:center;
+}
+
+.card{
+  flex:1;
+  background:var(--card);
+  border:1px solid #00ffff22;
+  padding:30px;
+  border-radius:15px;
+}
+
+.title3d{
+  font-size:28px;
+  color:var(--primary);
+  margin-bottom:15px;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:#aaa;
+}
+
+/* CHAT */
+.chat-toggle{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:var(--primary);
+  border:none;
+  padding:12px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+.chat{
+  position:fixed;
+  right:20px;
+  bottom:80px;
+  width:320px;
+  background:#111;
+  border:1px solid #00ffff33;
+  border-radius:12px;
+  padding:10px;
+  display:none;
+  flex-direction:column;
+  gap:10px;
+}
+
+.option{
+  background:#0a0a0a;
+  border:1px solid var(--primary);
+  color:var(--primary);
+  padding:10px;
+  border-radius:20px;
+  cursor:pointer;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🌍 PRZEŁĄCZNIK -->
+<div class="lang">
+  <span onclick="setLang('pl')">🇵🇱</span>
+  <span onclick="setLang('en')">🇬🇧</span>
+</div>
+
+<header>
+  <h1 id="title">SlayMC - Edycja 1</h1>
+</header>
+
+<nav>
+  <a href="#info" id="nav1">Co to jest</a>
+  <a href="#roleplay" id="nav2">Na czym polega</a>
+  <a href="#discord" id="nav3">Discord</a>
+</nav>
+
+<section id="info">
+<div class="card">
+<div class="title3d" id="infoTitle">Co to jest SlayMC?</div>
+<p id="infoText"></p>
+</div>
+</section>
+
+<section id="roleplay">
+<div class="card">
+<div class="title3d" id="rpTitle">Na czym polega SlayMC?</div>
+<p id="rpText"></p>
+</div>
+</section>
+
+<section id="discord">
+<div class="card">
+<div class="title3d">Discord</div>
+<p id="dcText"></p>
+</div>
+</section>
+
+<footer>© 2026 SlayMC</footer>
+
+<button class="chat-toggle" onclick="toggleChat()">💬</button>
+
+<div class="chat" id="chat">
+  <div class="option" onclick="pick(1)" id="opt1"></div>
+  <div class="option" onclick="pick(2)" id="opt2"></div>
+  <div class="option" onclick="pick(3)" id="opt3"></div>
+</div>
+
+<script>
+
+let lang = "pl";
+
+/* 🔥 TEKSTY */
+const data = {
+pl:{
+info:`SlayMC to serwer Minecraft inspirowany klimatem QSMP, jednak nie jest jego kopią ani nie posiada modów 1:1. Serwer działa przez aplikację Modrinth, a nie poprzez tradycyjne IP.<br><br>
+Aby dołączyć, wymagane jest posiadanie oryginalnej (Premium) wersji Minecrafta. Gracz musi dołączyć na Discord i zapoznać się z regulaminem.<br><br>
+Wstęp możliwy po wygraniu rekrutacji.`,
+
+rp:`SlayMC to serwer roleplay, gdzie gracze mogą tworzyć państwa, rozwijać je i budować ekonomię opartą na walucie serwerowej.<br><br>
+Możesz tworzyć państwa, dołączać do innych i rozwijać RP.<br><br>
+Tereny są przydzielane przez właściciela po zgłoszeniu obszaru A–B, który jest mapowany i publikowany.`,
+
+dc:`SlayMC posiada własny Discord, na który każdy gracz musi dołączyć przed grą.<br><br>
+Obowiązuje regulamin Discorda i serwera SlayMC. Wszystkie zasady trzeba przeczytać od A do Z.<br><br>
+Rekrutacja odbywa się co tydzień lub dwa.<br><br>
+🔗 <a href="https://discord.gg/YXstkYcQ" target="_blank">Dołącz</a>`,
+
+opt1:"📩 Co to jest SlayMC?",
+opt2:"ℹ Jak dołączyć?",
+opt3:"❌ Nic"
+},
+
+en:{
+info:`SlayMC is a Minecraft server inspired by the QSMP atmosphere, but it is not a copy and does not use 1:1 mods. The server runs through the Modrinth app instead of a traditional IP.<br><br>
+To join, you must own a premium version of Minecraft and join the Discord server to read the rules.<br><br>
+Access is granted after passing recruitment.`,
+
+rp:`SlayMC is a roleplay server where players can create countries, develop them, and build an economy based on a server currency.<br><br>
+You can create nations, join others, and expand your RP.<br><br>
+Territories are assigned by the owner after submitting an A–B area.`,
+
+dc:`SlayMC has its own Discord which every player must join before playing.<br><br>
+All rules must be read carefully from start to finish.<br><br>
+Recruitment takes place every week or two.<br><br>
+🔗 <a href="https://discord.gg/YXstkYcQ" target="_blank">Join</a>`,
+
+opt1:"📩 What is SlayMC?",
+opt2:"ℹ How to join?",
+opt3:"❌ Nothing"
+}
+};
+
+/* 🔥 ZMIANA JĘZYKA */
+function setLang(l){
+lang = l;
+
+document.getElementById("infoText").innerHTML = data[l].info;
+document.getElementById("rpText").innerHTML = data[l].rp;
+document.getElementById("dcText").innerHTML = data[l].dc;
+
+document.getElementById("opt1").innerText = data[l].opt1;
+document.getElementById("opt2").innerText = data[l].opt2;
+document.getElementById("opt3").innerText = data[l].opt3;
+}
+
+/* CHAT */
+function toggleChat(){
+const c=document.getElementById('chat');
+c.style.display=c.style.display==='flex'?'none':'flex';
+}
+
+function pick(x){
+
+if(x===1){
+alert(data[lang].info);
+}
+
+if(x===2){
+if(lang==="pl"){
+alert(`Aby dołączyć do SlayMC musisz mieć Minecraft Premium, wejść na Discord i przejść rekrutację.`);
+}else{
+alert(`To join SlayMC you need Minecraft Premium, join Discord and pass recruitment.`);
+}
+}
+
+if(x===3){
+alert(lang==="pl"?"Może następnym razem 🙂":"Maybe next time 🙂");
+}
+
+document.getElementById("chat").style.display="none";
+}
+
+/* start */
+setLang("pl");
+
+</script>
+
+</body>
+</html>
